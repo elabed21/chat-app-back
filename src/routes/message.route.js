@@ -1,11 +1,17 @@
-const Router = require('express')
+const Router = require("express");
 const router = Router();
-const msgController = require('../controllers/message.controller.js');
-const {isAuthenticated} = require('../middleware/authentication');
+const msgController = require("../controllers/message.controller.js");
+const { isAuthenticated } = require("../middleware/authentication");
 
-router.route('/')
-    .post(isAuthenticated,msgController.addMessage)
-    .get(isAuthenticated, msgController.getAllDiscussions);
+router
+  .route("/")
+  .post(isAuthenticated, msgController.addMessage)
+  .get(isAuthenticated, msgController.getAllDiscussions);
+
+router
+.route("/:id")
+.get(isAuthenticated, msgController.getDiscussionDetails)
+.patch(isAuthenticated, msgController.setReadMessageTo);
 
 // router.route('/:id')
 //     .get(msgController.findOne);

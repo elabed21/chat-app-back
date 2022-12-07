@@ -22,5 +22,11 @@ db.sequelize = sequelize;
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.messages = require("./messages.model.js")(sequelize, Sequelize);
 db.contacts = require("./contact.model.js")(sequelize, Sequelize);
+
+db.messages.hasMany(db.messages, {
+    as: 'parent',
+    foreignKey: 'message_parent',
+  });
+
 //db.user = require("./user.model.js")(sequelize, Sequelize);
 module.exports = db;
