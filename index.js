@@ -68,9 +68,8 @@ io.on('connection', (socket) => {
         console.log(message);
         io.emit('get_message', message);
     });
-  }
-  console.log("users", users);
-  socket.on("add_message", (message) => {
+   
+   socket.on("add_message", (message) => {
     console.log(message);
 
     const {
