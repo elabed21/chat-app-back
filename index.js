@@ -60,9 +60,9 @@ io.on('connection', (socket) => {
         const {
             message_from,
             message_to,
-            message_content,
+           // message,
         } = message;
-        messageService.addMessage(message_from, message_to, message_content);
+        //messageService.addMessage(message_from, message_to, message);
         io.emit('get_message', message);
     });
     socket.on('get_message', (message) => {
@@ -80,7 +80,7 @@ io.on("connect_error", (err) => {
 });
 
 // set port, listen for requests
-const PORT = normalizePort(process.env.PORT || '8080');
+const PORT = normalizePort(process.env.PORT || '8000');
 server.listen(PORT, () => {
     console.log('Server is running');
 })
