@@ -22,6 +22,19 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
             default : false,
         },
+        message_parent: {
+            type: Sequelize.INTEGER,
+            allowNull: true,
+            references: {
+              model: 'messages',
+              key: 'id',
+            },
+          },
+          discussion: {
+            type: Sequelize.BOOLEAN,
+            allowNull: false,
+            defaultValue: false,
+          },
     });
 
 
