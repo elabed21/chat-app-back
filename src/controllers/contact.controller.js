@@ -1,14 +1,11 @@
 const db = require("../models");
-const User = db.users;
+const Contact = db.contacts;
+
 const Op = db.Sequelize.Op;
-const bcrypt = require("bcrypt");
-const nodemailer = require('nodemailer');
+ const nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
-var jwt = require('jsonwebtoken');
-//var smtpTransport = require('nodemailer-smtp-transport');
-
+ //var smtpTransport = require('nodemailer-smtp-transport');
 const randtoken = require('rand-token');
-
 // Create and Save a new Tutorial
 exports.create = async (req, res) => {
     try {
@@ -24,29 +21,25 @@ exports.create = async (req, res) => {
             return;
         }
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-        // Create a book
-        const user = {
+ 
+        // Create a contact
+        const contact = {
             name: req.body.name,
             email: req.body.email,
-            password: hashedPassword
-
+            phone: req.body.phone, 
+            message: req.body.message,
+            objet: req.body.objet
         };
-
-        const useremail = await User.findOne({where: {email: user.email}});
-        if (useremail) {
-            res.json("Email already registered")
-            return;
-        }
+ 
 
         // Save Tutorial in the database
-        User.create(user)
+        Contact.create(contact)
             .then(data => {
                 res.send(data);
+                sendEmail(process.env.EMAIL,req.body);
 
             })
-
+            process.env.USER
             .catch(err => {
                 res.status(500).send({
                     message:
@@ -62,7 +55,7 @@ exports.create = async (req, res) => {
 // Find a single Tutorial with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    User.findByPk(id)
+    Contact.findByPk(id)
         .then(data => {
             if (data) {
                 res.send(data);
@@ -80,13 +73,11 @@ exports.findOne = (req, res) => {
 };
 
 
-
-
 // Update a user by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
 
-    User.update(req.body, {
+    Contact.update(req.body, {
         where: {id: id}
     })
         .then(num => {
@@ -112,7 +103,7 @@ exports.delete = (req, res) => {
 
     const id = req.params.id;
 
-    User.destroy({
+    Contact.destroy({
         where: {id: id}
     })
         .then(num => {
@@ -134,7 +125,7 @@ exports.delete = (req, res) => {
 };
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
-    User.destroy({
+    Contact.destroy({
         where: {},
         truncate: false
     })
@@ -156,7 +147,7 @@ exports.findAll = (req, res) => {
     const title = req.query.title;
     var condition = title ? {title: {[Op.like]: `%${title}%`}} : null;
 
-    User.findAll({where: condition})
+    Contact.findAll({where: condition})
         .then(data => {
             res.send(data);
         })
@@ -168,6 +159,52 @@ exports.findAll = (req, res) => {
         });
 };
 
+function sendEmail(email,request) {
+    try {
+        var email = email;
+         var mail = nodemailer.createTransport(smtpTransport({
+            service: 'Gmail',
+            secureConnection: false,
+            port: 587,
+            requiresAuth: true,
+            domains: ["gmail.com", "googlemail.com"],
+            auth: {
+                user: process.env.USER, // Your email id
+                pass: process.env.PASS
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        }));
+        
+        var name = request.name;
+        var emailname = request.email;
+        var phone = request.phone;
+        var objet = request.objet;
+        var message = request.message;
+        
+      
+        var mailOptions = {
+            from: process.env.USER,
+            to: email,
+            subject: 'Reset Password Link - yassin.com',
+            html: `<p> <b> Email from</b>  => ${name}</p><p> <b>Email</b> => ${emailname}</p>
+            <p><b> phone</b> => ${phone}</p><p><b> objet</b> => ${objet}</p><p><b> message</b> => ${message}</p>`
+        };
+
+        mail.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log("email sent sucessfully");
+
+            }
+        });
+    } catch (err) {
+        console.error(err);
+    }
+
+}
 
 
 

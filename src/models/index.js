@@ -21,6 +21,6 @@ db.sequelize = sequelize;
 
 db.users = require("./user.model.js")(sequelize, Sequelize);
 db.messages = require("./messages.model.js")(sequelize, Sequelize);
-
+db.contacts = require("./contact.model.js")(sequelize, Sequelize);
 //db.user = require("./user.model.js")(sequelize, Sequelize);
 module.exports = db;

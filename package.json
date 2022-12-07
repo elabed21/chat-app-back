@@ -31,6 +31,8 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "nodemon": "^2.0.16",
     "rand-token": "^1.0.1",
+    "req": "^0.1.4",
+    "request": "^2.88.2",
     "sequelize": "^6.11.0",
     "socket.io": "^4.5.1",
     "tedious": "^15.1.2",
